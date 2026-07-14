@@ -1,9 +1,3 @@
----
-layout: post
-title: "알아두면 좋은 정보 모음, 시작"
-categories: info
----
-
-살면서 알게 된 유용한 정보, 팁, 링크 등을 정리해두는 공간.
-
-나중에 다시 찾아보기 좋게 카테고리별로 정리하면 더 좋다.
+title: 나의 기록
+description: 일기, 취미, 정보, 학습, 글쓰기를 모아두는 개인 공간
+markdown: kramdown

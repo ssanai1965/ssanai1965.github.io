@@ -1,276 +1,74 @@
-:root {
-  --bg: #FBF8F2;
-  --text: #2E2A24;
-  --muted: #8A8272;
-  --brand: #5C6E4A;
-  --line: #E4DFD4;
-  --card-bg: #FFFFFF;
+# 나만의 기록 사이트 — 시작 가이드
 
-  --c-diary: #C97B63;
-  --c-hobby: #4F86A6;
-  --c-info: #B08D57;
-  --c-study: #6B5B95;
-  --c-writing: #5C6E4A;
-}
+## 1. GitHub 계정 만들기
+https://github.com 에서 무료로 가입합니다.
 
-* { box-sizing: border-box; }
+## 2. 저장소(repository) 만들기
+- GitHub 로그인 후 오른쪽 위 `+` → `New repository`
+- Repository name을 **반드시** `아이디.github.io` 형식으로 입력
+  (예: 아이디가 minji123이면 → minji123.github.io)
+- Public으로 설정 → `Create repository`
 
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
-  line-height: 1.6;
-}
+## 3. 이 파일들 업로드하기
+- 방금 만든 저장소 페이지에서 `Add file` → `Upload files` 클릭
+- 이 폴더 안의 모든 파일과 폴더를 그대로 드래그해서 올리기
+  (`_config.yml`, `index.md`, `diary.md` 등 전부 + `_posts` 폴더 + `assets` 폴더)
+- 맨 아래 `Commit changes` 클릭
 
-.wrap {
-  max-width: 980px;
-  margin: 0 auto;
-  padding: 0 24px;
-}
+## 4. GitHub Pages 켜기
+- 저장소 상단 `Settings` → 왼쪽 메뉴 `Pages`
+- `Build and deployment` → Source를 `Deploy from a branch`로 설정
+- Branch를 `main` (또는 `master`), 폴더는 `/ (root)` 선택 후 `Save`
+- 1~2분 후 `https://아이디.github.io` 주소로 접속하면 사이트가 보입니다
 
-a { color: inherit; text-decoration: none; }
+## 5. 새 글 쓰는 법
+`_posts` 폴더 안에 파일을 하나 추가하면 됩니다.
 
-/* Header */
-.site-header {
-  border-bottom: 1px solid var(--line);
-  background: var(--bg);
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
+- 파일명 형식: `연도-월-일-제목.md` (예: `2026-07-15-오늘의일기.md`)
+- 파일 맨 위에 아래 형식을 반드시 넣어주세요:
 
-.header-inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  padding-top: 18px;
-  padding-bottom: 18px;
-  gap: 12px;
-}
+```
+---
+layout: post
+title: "글 제목"
+categories: diary
+---
 
-.brand {
-  font-size: 20px;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-}
+여기부터 본문 내용을 자유롭게 적으면 됩니다.
+```
 
-.tabs {
-  display: flex;
-  gap: 4px;
-  flex-wrap: wrap;
-}
+- `categories:` 부분에 아래 5개 중 하나를 넣으면 해당 탭에 자동으로 나타납니다:
+  `diary`(일기) / `hobby`(취미) / `info`(정보) / `study`(학습) / `writing`(글쓰기)
+- 새로 쓴 글은 홈 화면의 "최근 업로드"와 상단의 "새 업로드" 탭에 날짜순으로 자동으로 나타납니다. 따로 손댈 필요 없어요.
 
-.tab {
-  padding: 8px 14px;
-  border-radius: 999px;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--muted);
-  transition: background 0.15s, color 0.15s;
-}
+## 6-1. 카드에 썸네일(대표 이미지) 넣는 법
+글 맨 위 설정에 `image:` 한 줄만 추가하면 목록 화면 카드에 사진이 뜹니다:
+```
+---
+layout: post
+title: "글 제목"
+categories: diary
+image: /assets/images/파일명.jpg
+---
+```
+`image:`를 안 넣으면 카테고리 색상의 기본 박스가 대신 표시됩니다.
 
-.tab:hover { background: var(--line); color: var(--text); }
+## 6. 사진 넣는 법
+- `assets/images` 폴더에 사진 파일 업로드
+- 글 본문에 아래처럼 작성:
+```
+![사진 설명](/assets/images/파일명.jpg)
+```
 
-.tab.is-active {
-  background: var(--text);
-  color: #fff;
-}
+## 7. 영상 넣는 법
+GitHub Pages는 큰 동영상 파일을 직접 올리기엔 적합하지 않습니다.
+유튜브에 비공개/일부공개로 올린 뒤, 글에 링크를 걸거나 아래처럼 삽입하는 방식을 권장합니다:
+```
+<iframe width="560" height="315" src="https://www.youtube.com/embed/영상ID"></iframe>
+```
 
-.tab-accent {
-  color: #fff;
-  background: var(--brand);
-}
+## 8. 사이트 제목/소개 바꾸기
+`_config.yml` 파일의 `title:`과 `description:` 부분을 원하는 내용으로 수정하면 됩니다.
 
-.tab-accent:hover { background: #4a5a3b; color: #fff; }
-
-/* Main */
-.main { padding: 40px 24px 80px; }
-
-.hero {
-  padding: 24px 0 40px;
-  border-bottom: 1px solid var(--line);
-  margin-bottom: 40px;
-}
-
-.hero h1 {
-  font-size: 32px;
-  margin: 0 0 8px;
-  letter-spacing: -0.02em;
-}
-
-.hero p {
-  margin: 0;
-  color: var(--muted);
-  font-size: 16px;
-}
-
-.section { margin-bottom: 48px; }
-
-.section-head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  margin-bottom: 20px;
-}
-
-.section-head h2 {
-  font-size: 20px;
-  margin: 0;
-}
-
-.see-all {
-  font-size: 14px;
-  color: var(--muted);
-}
-
-.see-all:hover { color: var(--brand); }
-
-.listing-head h1 {
-  font-size: 26px;
-  margin: 0 0 6px;
-}
-
-.listing-desc {
-  color: var(--muted);
-  margin: 0;
-}
-
-.empty {
-  color: var(--muted);
-  padding: 40px 0;
-  text-align: center;
-}
-
-/* Grid + Cards */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-}
-
-@media (max-width: 720px) {
-  .grid { grid-template-columns: repeat(2, 1fr); }
-}
-
-@media (max-width: 480px) {
-  .grid { grid-template-columns: 1fr; }
-}
-
-.card {
-  display: block;
-  background: var(--card-bg);
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  overflow: hidden;
-  transition: transform 0.15s, box-shadow 0.15s;
-}
-
-.card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(46, 42, 36, 0.08);
-}
-
-.card-thumb {
-  aspect-ratio: 4 / 3;
-  background: #EFEAE0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.card-thumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.thumb-fallback {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--muted);
-}
-
-.card-thumb[data-cat="diary"] { background: color-mix(in srgb, var(--c-diary) 18%, #fff); }
-.card-thumb[data-cat="hobby"] { background: color-mix(in srgb, var(--c-hobby) 18%, #fff); }
-.card-thumb[data-cat="info"] { background: color-mix(in srgb, var(--c-info) 18%, #fff); }
-.card-thumb[data-cat="study"] { background: color-mix(in srgb, var(--c-study) 18%, #fff); }
-.card-thumb[data-cat="writing"] { background: color-mix(in srgb, var(--c-writing) 18%, #fff); }
-
-.card-body { padding: 14px 16px 18px; }
-
-.chip {
-  display: inline-block;
-  font-size: 11px;
-  font-weight: 700;
-  padding: 3px 9px;
-  border-radius: 999px;
-  color: #fff;
-  margin-bottom: 8px;
-}
-
-.chip[data-cat="diary"] { background: var(--c-diary); }
-.chip[data-cat="hobby"] { background: var(--c-hobby); }
-.chip[data-cat="info"] { background: var(--c-info); }
-.chip[data-cat="study"] { background: var(--c-study); }
-.chip[data-cat="writing"] { background: var(--c-writing); }
-
-.card-title {
-  font-size: 16px;
-  margin: 0 0 6px;
-  line-height: 1.4;
-}
-
-.card-date {
-  font-size: 13px;
-  color: var(--muted);
-}
-
-/* Post detail */
-.post { max-width: 720px; margin: 0 auto; }
-
-.post-title {
-  font-size: 28px;
-  margin: 10px 0 6px;
-}
-
-.post-date {
-  color: var(--muted);
-  font-size: 14px;
-}
-
-.post-image {
-  margin: 24px 0;
-  border-radius: 14px;
-  overflow: hidden;
-}
-
-.post-image img { width: 100%; display: block; }
-
-.post-content {
-  font-size: 16px;
-  margin-top: 24px;
-}
-
-.post-content img {
-  max-width: 100%;
-  border-radius: 10px;
-}
-
-.back-link {
-  display: inline-block;
-  margin-top: 40px;
-  font-size: 14px;
-  color: var(--muted);
-}
-
-.back-link:hover { color: var(--brand); }
-
-/* Footer */
-.site-footer {
-  border-top: 1px solid var(--line);
-  padding: 24px 0;
-  color: var(--muted);
-  font-size: 13px;
-}
+---
+막히는 부분이 생기면 언제든 다시 물어보세요.

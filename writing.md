@@ -1,7 +1,7 @@
 ---
 layout: listing
-title: 일기
-cat: diary
-permalink: /diary/
+title: 글쓰기
+cat: writing
+permalink: /writing/
 ---
-하루하루의 기록
+생각을 담은 글
