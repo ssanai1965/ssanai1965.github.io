@@ -1,0 +1,29 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "assets/images/uploads"
+public_folder: "/assets/images/uploads"
+
+collections:
+  - name: "posts"
+    label: "글"
+    label_singular: "글"
+    folder: "_posts"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - { label: "제목", name: "title", widget: "string" }
+      - { label: "날짜", name: "date", widget: "datetime" }
+      - label: "카테고리"
+        name: "categories"
+        widget: "select"
+        options:
+          - { label: "일기", value: "diary" }
+          - { label: "취미활동", value: "hobby" }
+          - { label: "좋은 정보", value: "info" }
+          - { label: "학습", value: "study" }
+          - { label: "글쓰기", value: "writing" }
+      - { label: "대표 이미지 (선택)", name: "image", widget: "image", required: false }
+      - { label: "레이아웃", name: "layout", widget: "hidden", default: "post" }
+      - { label: "본문", name: "body", widget: "markdown" }
