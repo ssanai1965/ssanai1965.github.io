@@ -2,7 +2,7 @@
 <a class="card" href="{{ include.post.url | relative_url }}">
   <div class="card-thumb" data-cat="{{ cat }}">
     {% if include.post.image %}
-      <img src="{{ include.post.image | relative_url }}" alt="">
+      <img src="{{ include.post.image | relative_url }}" alt="" loading="lazy">
     {% else %}
       <span class="thumb-fallback">{{ site.data.categories[cat] }}</span>
     {% endif %}
@@ -10,6 +10,9 @@
   <div class="card-body">
     <span class="chip" data-cat="{{ cat }}">{{ site.data.categories[cat] }}</span>
     <h3 class="card-title">{{ include.post.title }}</h3>
-    <time class="card-date">{{ include.post.date | date: "%Y.%m.%d" }}</time>
+    <div class="card-meta">
+      <time class="card-date">{{ include.post.date | date: "%Y.%m.%d" }}</time>
+      <span class="card-arrow" aria-hidden="true">→</span>
+    </div>
   </div>
 </a>
