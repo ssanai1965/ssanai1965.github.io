@@ -1,7 +1,7 @@
-const BUILD="11e081c54cfa9b70-gh10";
+const BUILD="11e081c54cfa9b70-gh11";
 const CACHE="my-compass-app-"+BUILD;
 const BASE=new URL("./",self.location).pathname;
-const REL=["offline.html","offline.js","offline.css","ics-export.js","ics-export.js?v=10","manifest.webmanifest","manifest.webmanifest?v=7","favicon.svg","apple-touch-icon.png","apple-touch-icon.png?v=6","icons/icon-152.png","icons/icon-167.png","icons/icon-152.png?v=6","icons/icon-167.png?v=6","icons/icon-192.png","icons/icon-512.png","icons/icon-maskable-512.png"];
+const REL=["offline.html","offline.js","offline.css","ics-export.js","gsync.js","gsync.js?v=11","ics-export.js?v=10","manifest.webmanifest","manifest.webmanifest?v=7","favicon.svg","apple-touch-icon.png","apple-touch-icon.png?v=6","icons/icon-152.png","icons/icon-167.png","icons/icon-152.png?v=6","icons/icon-167.png?v=6","icons/icon-192.png","icons/icon-512.png","icons/icon-maskable-512.png"];
 const KEYS=REL.map(p=>BASE+p);
 self.addEventListener("install",event=>event.waitUntil((async()=>{
  const cache=await caches.open(CACHE);
