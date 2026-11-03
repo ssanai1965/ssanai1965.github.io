@@ -160,6 +160,15 @@ async function pushCalendar(records,cm,state){
   if(!r2.ok)throw new Error("일정 저장 실패 "+r2.status);var ev=await r2.json();state[j.e.id]={cal:j.cal,h:j.hh,etag:ev.etag,dur:j.prev&&j.prev.dur||null};stat.up++});
  stat.errors=errs.length;stat.firstError=errs[0]&&errs[0].message;return stat}
 
+/* ---------- 취소된 할 일 일괄 삭제 (완료 항목은 건드리지 않음) ---------- */
+async function purgeCancelled(){if(running)return;
+ var pend=pendingIds(),list=(await readLocal()).filter(function(e){return e.kind==="task"&&!e.deleted&&e.data&&e.data.status==="cancelled"&&!pend[e.id]});
+ if(!list.length){toast("취소된 할 일이 없어요.");return}
+ if(!confirm("취소된 할 일 "+list.length+"건을 삭제할까요?\n(완료한 할 일은 그대로 남아요)"))return;
+ var n=await writeLocal(list.map(function(e){return{e:{id:e.id,kind:e.kind,data:e.data,deleted:true},expect:e.version||0}}));
+ try{var st=(await kvGet("cal"))||{};list.forEach(function(e){delete st[e.id]});await kvSet("cal",st)}catch(e){}
+ toast("취소된 할 일 "+n+"건을 삭제했어요.\n다른 기기에도 반영하려면 '구글과 동기화하기'를 눌러 주세요.",8000)}
+
 /* ---------- 실행·UI ---------- */
 function toast(msg,ms){var n=document.getElementById("ics-toast");if(!n){n=document.createElement("div");n.id="ics-toast";n.setAttribute("role","status");n.style.cssText="position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%);background:#314e46;color:#fff;padding:12px 18px;border-radius:12px;font-size:14px;z-index:99999;max-width:90vw;box-shadow:0 6px 20px rgba(0,0,0,.25);white-space:pre-line";document.body.appendChild(n)}n.textContent=msg;n.style.display="block";clearTimeout(n._t);n._t=setTimeout(function(){n.style.display="none"},ms||5000)}
 function setLast(){try{localStorage.setItem("compass-gsync-last",new Date().toISOString())}catch(e){}updateLabel()}
@@ -195,8 +204,10 @@ function inject(){var btns=document.querySelectorAll("button.backup-action");if(
  var b=first.cloneNode(true);b.id="gsync-btn";b.type="button";var st=b.querySelector("strong"),sm=b.querySelector("small");if(st)st.textContent="구글과 동기화하기";if(sm)sm.textContent="";
  b.addEventListener("click",function(e){e.preventDefault();e.stopPropagation();startFromGesture()});
  var anchor=first;while(anchor.previousElementSibling&&anchor.previousElementSibling.tagName!=="H4")anchor=anchor.previousElementSibling;var h4=anchor.previousElementSibling;var parent=first.parentNode;
- parent.insertBefore(head,h4||first);parent.insertBefore(b,h4||first);updateLabel();}
+ var pb=first.cloneNode(true);pb.id="purge-btn";pb.type="button";var pst=pb.querySelector("strong"),psm=pb.querySelector("small");if(pst)pst.textContent="취소된 할 일 일괄 삭제";if(psm)psm.textContent="취소선만 있는 할 일을 지워요 · 완료한 할 일은 유지";
+ pb.addEventListener("click",function(e){e.preventDefault();e.stopPropagation();purgeCancelled().catch(function(err){toast("삭제하지 못했어요.\n"+(err&&err.message||""),7000)})});
+ parent.insertBefore(head,h4||first);parent.insertBefore(b,h4||first);parent.insertBefore(pb,h4||first);updateLabel();}
 new MutationObserver(inject).observe(document.documentElement,{childList:true,subtree:true});
 if(navigator.onLine)setTimeout(function(){loadGis().catch(function(){})},1500);
-window.__compassSync={merge:merge,eventId:eventId,eventBody:eventBody,entHash:entHash,syncDevices:syncDevices,pushCalendar:pushCalendar,pullCalendar:pullCalendar,_setToken:function(t){token=t;tokenExp=Date.now()+3600000}};
+window.__compassSync={merge:merge,eventId:eventId,eventBody:eventBody,entHash:entHash,syncDevices:syncDevices,pushCalendar:pushCalendar,pullCalendar:pullCalendar,purgeCancelled:purgeCancelled,_setToken:function(t){token=t;tokenExp=Date.now()+3600000}};
 })();
