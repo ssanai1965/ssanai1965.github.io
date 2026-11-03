@@ -111,11 +111,11 @@ function evTiming(ev){if(ev.start&&ev.start.date)return{date:ev.start.date,time:
 function inPeriod(d){return/^\d{4}-\d{2}-\d{2}$/.test(d||"")&&d>="2026-11-01"&&d<="2027-12-31"}
 async function listEvents(cal,updatedMin){var out=[],page="";do{var u=CAL+"/calendars/"+encodeURIComponent(cal)+"/events?singleEvents=true&showDeleted=true&maxResults=2500&timeMin="+encodeURIComponent(PERIOD_MIN)+"&timeMax="+encodeURIComponent(PERIOD_MAX)+(updatedMin?"&updatedMin="+encodeURIComponent(updatedMin):"")+(page?"&pageToken="+encodeURIComponent(page):"");
  var j=await apiJson("GET",u);out=out.concat(j.items||[]);page=j.nextPageToken||""}while(page);return out}
-/* ② 캘린더 → 플래너. 규칙: 한쪽만 바뀌면 바뀐 쪽, 양쪽 다 바뀌면 플래너 우선. 캘린더에서 지운 일정은 플래너에서 '취소' 처리(기록 보존) */
+/* ② 캘린더 → 플래너. 규칙: 한쪽만 바뀌면 바뀐 쪽, 양쪽 다 바뀌면 플래너 우선. 캘린더에서 지운 일정은 플래너에서도 삭제(완료·취소 표시한 할 일은 유지) */
 async function pullCalendar(records,cm,state){
  var roles={},tasks={};records.forEach(function(e){if(e.kind==="role"&&!e.deleted)roles[e.id]=e.data.name;if(e.kind==="task")tasks[e.id]=e});
  var lastPull=await kvGet("lastPull"),started=new Date().toISOString(),updatedMin=lastPull?new Date(new Date(lastPull).getTime()-10*60000).toISOString():"";
- var changes={},stat={added:0,updated:0,cancelled:0};
+ var changes={},stat={added:0,updated:0,deleted:0};
  var cals=Object.keys(cm.calRole);
  for(var ci=0;ci<cals.length;ci++){var cal=cals[ci],roleId=cm.calRole[cal],evs=await listEvents(cal,updatedMin);
   evs.forEach(function(ev){
@@ -123,7 +123,7 @@ async function pullCalendar(records,cm,state){
    if(ext.compass==="1"&&ext.taskId&&!tasks[ext.taskId])return;
    var task=tid?(changes[tid]||tasks[tid]):null,st=tid?state[tid]:null;
    if(ev.status==="cancelled"){
-    if(task&&st&&st.cal===cal&&!task.deleted&&ACTIVE[task.data.status]){changes[tid]=Object.assign({},task,{data:Object.assign({},task.data,{status:"cancelled"})});delete state[tid];stat.cancelled++}
+    if(task&&st&&st.cal===cal&&!task.deleted&&ACTIVE[task.data.status]){changes[tid]=Object.assign({},task,{deleted:true});delete state[tid];stat.deleted++}
     return}
    var tm=evTiming(ev);if(!tm||!inPeriod(tm.date))return;
    if(task){
@@ -185,7 +185,7 @@ async function runAfterToken(){
   var p=await pullCalendar(d.records,cm,state);
   if(p.changed)d=await syncDevices();
   var c=await pushCalendar(d.records,cm,state);await kvSet("cal",state);setLast();
-  var msg="동기화 완료\n· 다른 기기에서 가져온 기록 "+d.pulled+"건\n· 캘린더에서 가져옴: 새 일정 "+p.added+"건, 수정 "+p.updated+"건, 취소 "+p.cancelled+"건\n· 캘린더로 보냄: 반영 "+c.up+"건, 삭제 "+c.del+"건";
+  var msg="동기화 완료\n· 다른 기기에서 가져온 기록 "+d.pulled+"건\n· 캘린더에서 가져옴: 새 일정 "+p.added+"건, 수정 "+p.updated+"건, 삭제 "+p.deleted+"건\n· 캘린더로 보냄: 반영 "+c.up+"건, 삭제 "+c.del+"건";
   if(cm.missing.length)msg+="\n· 같은 이름의 캘린더가 없어 기본 캘린더에 넣은 역할: "+cm.missing.join(", ");
   if(c.errors)msg+="\n· 실패 "+c.errors+"건 (다시 동기화하면 재시도): "+(c.firstError||"");
   toast(msg,9000);
