@@ -1,4 +1,4 @@
-const BUILD="11e081c54cfa9b70-gh14";
+const BUILD="11e081c54cfa9b70-gh15";
 const CACHE="my-compass-app-"+BUILD;
 const BASE=new URL("./",self.location).pathname;
 const REL=["offline.html","offline.js","offline.css","gsync.js","gsync.js?v=14","manifest.webmanifest","manifest.webmanifest?v=7","favicon.svg","apple-touch-icon.png","apple-touch-icon.png?v=6","icons/icon-152.png","icons/icon-167.png","icons/icon-152.png?v=6","icons/icon-167.png?v=6","icons/icon-192.png","icons/icon-512.png","icons/icon-maskable-512.png"];
